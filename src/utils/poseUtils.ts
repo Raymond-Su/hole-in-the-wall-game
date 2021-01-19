@@ -1,6 +1,4 @@
 import { PoseNet } from "@tensorflow-models/posenet";
-import { guiConfiguration, posenetConfiguration } from "../constants/model";
-import { videoHeight, videoWidth } from "../constants/video";
 import { samplePoses } from "../data/samplePoses";
 import { poseSimilarity } from "posenet-similarity";
 import {
@@ -10,6 +8,12 @@ import {
   drawSkeleton
 } from "./guiUtils";
 import { lineWidth, skeletonWidth } from "../constants/gui";
+import {
+  guiConfiguration,
+  posenetConfiguration,
+  videoHeight,
+  videoWidth
+} from "../constants";
 
 export const detectPoseInRealTime = async (
   canvas: HTMLCanvasElement | null,
@@ -46,23 +50,8 @@ export const detectPoseInRealTime = async (
       ctx.restore();
     }
 
-    // draw static keypoints
-    if (counter > 40) {
-      counter = 0;
-      const weightedDist = poseSimilarity(currPose, pose, {
-        strategy: "cosineSimilarity"
-      });
-      if (weightedDist > 0.98) {
-        increasePoints();
-      } else {
-        increaseFail();
-        fail++;
-      }
-      const currPoseIndex = Math.floor(Math.random() * samplePoses.length);
-      currPose = samplePoses[currPoseIndex];
-    }
-
     const scale = counter / 40;
+
     drawOverlay(currPose.keypoints, 0, ctx, scale, "rgba(255,255,255,0.3)", 20);
     if (pose.score >= minPoseConfidence) {
       if (guiConfiguration.showPoints) {
@@ -82,6 +71,22 @@ export const detectPoseInRealTime = async (
         }
       }
     }
+    // draw static keypoints
+    if (counter > 40) {
+      counter = 0;
+      const weightedDist = poseSimilarity(currPose, pose, {
+        strategy: "cosineSimilarity"
+      });
+      if (weightedDist > 0.98) {
+        increasePoints();
+      } else {
+        increaseFail();
+        fail++;
+      }
+      const currPoseIndex = Math.floor(Math.random() * samplePoses.length);
+      currPose = samplePoses[currPoseIndex];
+    }
+
     if (fail < failsLimit) {
       requestAnimationFrame(poseDetectionFrame);
     }
