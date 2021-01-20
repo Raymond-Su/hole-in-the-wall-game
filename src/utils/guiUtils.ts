@@ -66,7 +66,7 @@ export const drawSkeleton = (
 ): void => {
   const adjacentKeyPoints = getAdjacentKeyPoints(keypoints, minConfidence);
 
-  adjacentKeyPoints.forEach((keypoints) => {
+  adjacentKeyPoints.map((keypoints) => {
     drawSegment(
       toTuple(keypoints[0].position),
       toTuple(keypoints[1].position),
@@ -86,16 +86,12 @@ export const drawKeypoints = (
   radius = 3,
   scale = 1
 ): void => {
-  for (let i = 0; i < keypoints.length; i++) {
-    const keypoint = keypoints[i];
-
-    if (keypoint.score < minConfidence) {
-      continue;
+  keypoints.map((keypoint) => {
+    if (keypoint.score > minConfidence) {
+      const { y, x } = keypoint.position;
+      drawPoint(ctx, y * scale, x * scale, radius, aquaColor);
     }
-
-    const { y, x } = keypoint.position;
-    drawPoint(ctx, y * scale, x * scale, radius, aquaColor);
-  }
+  });
 };
 
 // Draw the bounding box of a pose. For example, for a whole person standing in an image, the bounding box will begin at the nose and extend to one of ankles

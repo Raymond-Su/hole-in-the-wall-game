@@ -17,6 +17,7 @@ export const drawPoint = (
   ctx.fillStyle = color;
   ctx.fill();
 };
+
 // Draws a line on a canvas, i.e. a joint
 export const drawSegment = (
   [ay, ax]: number[],
