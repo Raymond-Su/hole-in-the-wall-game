@@ -51,4 +51,3 @@ I was stucked for some time on combining HTML5 canvas context [scaling](https://
 ## License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details
-# GraphVisualiser
